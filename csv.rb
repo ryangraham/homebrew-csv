@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Credz < Formula
+class Csv < Formula
   desc 'CSV Parser for C++'
   homepage 'https://github.com/ryangraham/csv'
   url 'https://github.com/ryangraham/csv/archive/v0.0.1-0e290d6.tar.gz'
