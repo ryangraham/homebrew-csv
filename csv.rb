@@ -18,8 +18,39 @@ class Csv < Formula
     end
   end
 
-  # TODO
-  # test do
-    
-  # end
+  def caveats
+    <<~EOS
+      If built with CMake support, you can use find_package to use the library.
+      Without it, please set your include path accordingly:
+      CPPFLAGS: -I#{include}
+    EOS
+  end
+
+  test do
+    (testpath/"test.cpp").write <<~EOS
+      #include <csv/csv.h>
+      #include <iostream>
+      #include <sstream>
+      #include <string>
+
+      int main() {
+        std::string input = R"csv(FirstName,LastName
+                            Fred,Flintstone
+                            Pebbles,Flintstone
+                            Barney,Rubble
+                            Betty,Rubble)csv";
+        std::stringstream istr(input);
+        auto reader = csv::map_reader(istr);
+        std::cout << reader.field_names.front() << std::endl;
+        std::cout << std::string(10, '-') << std::endl;
+
+        for (auto& row : reader.rows()) {
+          std::cout << row["FirstName"] << std::endl;
+        }
+        return 0;
+      }
+      EOS
+    system ENV.cxx, "test.cpp", "-I#{include}", "-std=c++17", "-o", "test"
+    system "./test"
+  end
 end
